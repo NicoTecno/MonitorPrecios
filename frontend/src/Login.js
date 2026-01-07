@@ -4,10 +4,13 @@ function Login({ onLogin, irARegistro }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // Cambiamos localhost por tu URL de Render
+  const API_URL = 'https://monitor-precios-backend.onrender.com';
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -18,12 +21,9 @@ function Login({ onLogin, irARegistro }) {
       if (data.token) {
         localStorage.setItem('token', data.token);
         
-        // --- CORRECCIÓN AQUÍ ---
-        // Combinamos lo que manda el servidor con el email del formulario
-        // para asegurar que App.js tenga toda la info necesaria.
         const usuarioParaApp = {
-          ...data.usuario,      // id, nombre, etc.
-          email: email.toLowerCase() // Aseguramos que el email esté presente
+          ...data.usuario,
+          email: email.toLowerCase() 
         };
 
         onLogin(usuarioParaApp);
@@ -31,7 +31,7 @@ function Login({ onLogin, irARegistro }) {
         alert("Error: " + data.error);
       }
     } catch (error) {
-      alert("No se pudo conectar con el servidor. ¿Está encendido el Backend?");
+      alert("No se pudo conectar con el servidor en Render. Revisá los logs del Backend.");
     }
   };
 
@@ -42,7 +42,7 @@ function Login({ onLogin, irARegistro }) {
         <input 
           type="email" 
           placeholder="Email" 
-          value={email} // Agregamos value para controlar el input
+          value={email} 
           onChange={e => setEmail(e.target.value)} 
           style={{width: '100%', marginBottom: '10px', padding: '8px', boxSizing: 'border-box'}} 
           required 
@@ -50,7 +50,7 @@ function Login({ onLogin, irARegistro }) {
         <input 
           type="password" 
           placeholder="Contraseña" 
-          value={password} // Agregamos value para controlar el input
+          value={password} 
           onChange={e => setPassword(e.target.value)} 
           style={{width: '100%', marginBottom: '10px', padding: '8px', boxSizing: 'border-box'}} 
           required 

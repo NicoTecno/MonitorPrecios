@@ -9,12 +9,14 @@ function App() {
   const [url, setUrl] = useState('');
   const [alerta, setAlerta] = useState('');
 
-  // Nombre de tu bot actualizado
+  // --- CONFIGURACIÓN CENTRALIZADA ---
+  const API_URL = 'https://monitor-precios-backend.onrender.com';
   const BOT_USERNAME = 'Monitor_de_precios_2026_bot'; 
 
   const cargarProductos = async (userId) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/usuario/${userId}/productos`);
+      // Reemplazado localhost por la URL de Render
+      const res = await fetch(`${API_URL}/api/usuario/${userId}/productos`);
       const data = await res.json();
       setProductos(data);
     } catch (err) {
@@ -25,7 +27,6 @@ function App() {
   useEffect(() => {
     if (user) {
       cargarProductos(user.id);
-      // Log para verificar qué datos trae el usuario si el email no aparece
       console.log("Usuario actual:", user);
     }
   }, [user]);
@@ -36,7 +37,8 @@ function App() {
 
   const agregarProducto = async (e) => {
     e.preventDefault();
-    const response = await fetch('http://localhost:5000/api/productos/seguimiento', {
+    // Reemplazado localhost por la URL de Render
+    const response = await fetch(`${API_URL}/api/productos/seguimiento`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url, precioAlerta: Number(alerta), userId: user.id })
@@ -45,7 +47,6 @@ function App() {
     if (response.ok) {
       setUrl('');
       setAlerta('');
-      // Esperamos un poco a que el scraper termine antes de recargar la lista
       setTimeout(() => cargarProductos(user.id), 3000);
     }
   };
@@ -54,7 +55,8 @@ function App() {
     if (!window.confirm("¿Dejar de seguir este producto?")) return;
     
     try {
-      const res = await fetch(`http://localhost:5000/api/usuario/${user.id}/producto/${productoId}`, {
+      // Reemplazado localhost por la URL de Render
+      const res = await fetch(`${API_URL}/api/usuario/${user.id}/producto/${productoId}`, {
         method: 'DELETE',
       });
 
@@ -90,7 +92,6 @@ function App() {
           <div>
             <h4 style={{ margin: '0 0 5px 0', color: '#0d47a1' }}>📱 Recibí alertas en tu celular</h4>
             <p style={{ margin: 0, fontSize: '14px', color: '#1565c0' }}>
-              {/* Si user.email está vacío, mostramos un aviso para que revisen su perfil */}
               Hacé clic y enviá al bot: <code>/vincular {user.email || "(revisá tu email)"}</code>
             </p>
           </div>
